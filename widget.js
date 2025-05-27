@@ -103,16 +103,22 @@
     messages.scrollTop = messages.scrollHeight;
 
     try {
-      const res = await fetch('https://veloriaai.onrender.com/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg }),
-      });
-      const data = await res.json();
-      messages.innerHTML += `<div><b>🤖:</b> ${data.reply}</div>`;
-    } catch (e) {
-      messages.innerHTML += `<div><b>🤖:</b> Hiba történt. 😢</div>`;
-    }
-    messages.scrollTop = messages.scrollHeight;
+  const res = await fetch('https://veloriaai.onrender.com/ask', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: msg }),
   });
-})();
+
+  const data = await res.json();
+  console.log('🔍 AI válasz:', data);
+
+  if (!data || !data.reply) {
+    messages.innerHTML += `<div><b>🤖:</b> ❌ Nincs válasz (AI error)</div>`;
+  } else {
+    messages.innerHTML += `<div><b>🤖:</b> ${data.reply}</div>`;
+  }
+
+} catch (e) {
+  console.error('❌ Hiba történt:', e);
+  messages.innerHTML += `<div><b>⚠️</b> Hiba történt. 😢</div>`;
+}
